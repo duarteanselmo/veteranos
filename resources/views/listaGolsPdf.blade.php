@@ -38,7 +38,6 @@
         </div>
     </div>
     <div class="page-break"></div>
-    <!-- <br> -->
     <p class="titulo">Estatísticas</p>
     <div class="row">
     <table class="tabela" width="100%">
