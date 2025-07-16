@@ -1026,7 +1026,7 @@
     .bi-currency-dollar
     {
       color: green;
-      font-size: 5px;
+      font-size: 15px;
       margin-bottom: 0px;
     }
 
