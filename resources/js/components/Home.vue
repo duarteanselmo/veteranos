@@ -824,7 +824,7 @@
                   <td>{{cartao.cartao_id == 1 ? cartao.quantidade : '-'}}</td>
                   <td>{{cartao.cartao_id == 2 ? cartao.quantidade : '-'}}</td>
                   <td v-if="cartao.status == 0">
-                    Devedor <i class="bi bi-currency-dollar" v-on:click="pagarCartao(cartao.id)" style="cursor: pointer;"></i>  
+                    Devedor <i class="bi bi-currency-dollar" v-on:click="pagarCartao(cartao.id)" style="cursor: pointer;" title="Pagar cartão"></i>  
                   </td>
                   <td v-else>Pago</td>
                   <td>{{cartao.data}}</td>
