@@ -40,5 +40,8 @@ Route::get('getDetalhes', 'App\Http\Controllers\JogosController@getDetalhes');
 Route::get('getFinanceiroLancamentos', 'App\Http\Controllers\FinanceiroController@getFinanceiroLancamentos');
 Route::get('golsJogadorPdf', 'App\Http\Controllers\HomeController@golsJogadorPdf');
 Route::get('financeiroDevedoresPdf', 'App\Http\Controllers\FinanceiroController@gerarPdfDevedores');
+Route::post('storeCartao', 'App\Http\Controllers\HomeController@storeCartao');
+Route::get('getCartoesJogador', 'App\Http\Controllers\HomeController@getCartoesJogador');
+Route::post('pagarCartao', 'App\Http\Controllers\HomeController@pagarCartao');
 
 

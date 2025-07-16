@@ -5,9 +5,11 @@
             <tr class="cabecalho-header">
                 <td width="1%">#</td>
                 <td>Nome</td>
-                <td>Gols Marcados</td>
-                <td>Gols Sofridos</td>
-                <td>Gols Contra</td>
+                <td style="text-align: center">Gols Marcados</td>
+                <td style="text-align: center">Gols Sofridos</td>
+                <td style="text-align: center">Gols Contra</td>
+                <td width="2%"><div style="background-color: yellow; width: 100%; height: 15px;"></div></td>
+                <td width="2%"><div style="background-color: red; width: 100%; height: 15px"></div></td>
             </tr>
                 
             <?php $i = 0; ?>
@@ -16,19 +18,29 @@
                     <td>{{$key+1}}</td>
                     <td>{{$lista->nome}}</td>
                     @if($lista->gols)
-                        <td>{{$lista->gols}}</td>
+                        <td style="text-align: center">{{$lista->gols}}</td>
                     @else
-                        <td>-</td>
+                        <td style="text-align: center">-</td>
                     @endif
                     @if($lista->gols_sofridos)
-                        <td>{{$lista->gols_sofridos}}</td>
+                        <td style="text-align: center">{{$lista->gols_sofridos}}</td>
                     @else
-                        <td>-</td>
+                        <td style="text-align: center">-</td>
                     @endif
                     @if($lista->gol_contra)
-                        <td>{{$lista->gol_contra}}</td>
+                        <td style="text-align: center">{{$lista->gol_contra}}</td>
                     @else
-                        <td>-</td>
+                        <td style="text-align: center">-</td>
+                    @endif
+                    @if($lista->cartao_amarelo)
+                        <td style="text-align: center">{{$lista->cartao_amarelo}}</td>
+                    @else
+                        <td style="text-align: center">-</td>
+                    @endif
+                    @if($lista->cartao_vermelho)
+                        <td style="text-align: center">{{$lista->cartao_vermelho}}</td>
+                    @else
+                        <td style="text-align: center">-</td>
                     @endif
                 </tr>
                 <?php $i++; ?>

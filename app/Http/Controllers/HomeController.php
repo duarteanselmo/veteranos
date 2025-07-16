@@ -8,6 +8,8 @@ use App\Models\Jogador;
 use App\Models\JogadorGol;
 use App\Models\Temporadas;
 use App\Models\Equipe;
+use App\Models\Cartao;
+use App\Models\JogadorCartoes;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class HomeController extends Controller
@@ -22,6 +24,7 @@ class HomeController extends Controller
         $obj->jogadores = $this->getJogadores($request);
         $obj->temporadas = $this->getTemporadas();
         $obj->equipes = $this->getEquipes();
+        $obj->cartoes = $this->getCartoes();
         return $obj;
     }
 
@@ -50,6 +53,8 @@ class HomeController extends Controller
             $jogador->gols_sofridos = $jogador_estatistica->gols_sofridos;
             $jogador->gol_contra = $jogador_estatistica->gol_contra;
             $jogador->participacoes = $this->verificaParticipacao($jogador->id);
+            $jogador->cartao_amarelo = $this->getCartaoAmarelo($jogador->id);
+            $jogador->cartao_vermelho = $this->getCartaoVermelho($jogador->id);
         }
         
         return $jogadores->sortByDesc('gols')->values();
@@ -138,6 +143,28 @@ class HomeController extends Controller
         $data->jogadores = $this->getJogadores($request);
         return response()->json($data);
 
+    }
+
+    public function storeCartao(Request $request)
+    {
+        // dd($request);
+        if($request->jogador_cartao_id)
+            $cartao = JogadorCartoes::find($request->jogador_cartao_id);
+        else
+            $cartao = new JogadorCartoes();
+
+        $cartao->jogador_id = $request->jogador_id;
+        $cartao->equipe_id = $request->equipe_id;
+        $cartao->cartao_id = $request->cartao_id;
+        $cartao->quantidade = $request->qtd_cartao;
+        $cartao->data = $request->data_cartao;
+        $cartao->temporada_id = $request->temporada_id;
+        $request->jogador_cartao_id ? $cartao->update() : $cartao->save();
+
+        $data = new class{};
+        $data->jogador_cartoes = $this->getCartoesJogador($request);
+        $data->jogadores = $this->getJogadores($request);
+        return response()->json($data);
     }
 
     public function getEstatisticas(Request $request)
@@ -438,5 +465,54 @@ class HomeController extends Controller
         ->where('equipe_id', $equipe_id)
         ->sum('gol_contra');
         return $quauntidadeGolsContraMarcados;
+    }
+
+    public function getCartoes()
+    {
+        $cartoes = Cartao::get();
+        return $cartoes;
+    }
+
+    public function getCartaoAmarelo($jogador_id)
+    {
+        $cartaoAmarelo = JogadorCartoes::where('cartao_id', 1)
+        ->where('jogador_id', $jogador_id)
+        ->where('status', 0)
+        ->sum('quantidade');
+        return $cartaoAmarelo;
+    }
+
+        public function getCartaoVermelho($jogador_id)
+    {
+        $cartaoVermelho = JogadorCartoes::where('cartao_id', 2)
+        ->where('jogador_id', $jogador_id)
+        ->where('status', 0)
+        ->count();
+        return $cartaoVermelho;
+    }
+
+    public function getCartoesJogador(Request $request)
+    {
+        $cartoes = JogadorCartoes::select('j.nome','e.nome as equipe','t.nome as temporada', 'jogador_cartoes.*')
+        ->join('jogadores As j', 'j.id', '=', 'jogador_cartoes.jogador_id')
+        ->join('equipes As e', 'e.id', '=', 'jogador_cartoes.equipe_id')
+        ->join('temporadas As t', 't.id', '=', 'jogador_cartoes.temporada_id')
+        ->where('jogador_id', $request->jogador_id)
+        ->get();
+        return $cartoes;
+    }
+
+    public function pagarCartao(Request $request)
+    {
+        // dd($request);
+        $cartao = JogadorCartoes::find($request->id);
+        $cartao->status = 1;
+        $cartao->update();
+
+        $data = new class{};
+        $data->jogador_cartoes = $this->getCartoesJogador($request);
+        $data->jogadores = $this->getJogadores($request);
+        return response()->json($data);
+
     }
 }
